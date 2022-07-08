@@ -1,0 +1,26 @@
+{
+  "name": "XYZ Test App",
+  "description": "Demo of getting geolocation and atmpressure.",
+  "start_url": "index.html",
+  "icons": [{
+      "src": "img/icons/xyz_60.png",
+      "sizes": "60x60"
+    },
+    {
+      "src": "img/icons/xyz_128.png",
+      "sizes": "128x128"
+  }],
+  "b2g_features" : {
+    "version": "0.0.1",
+    "developer": {
+      "name": "Seinlin",
+      "url": "https://seinlin.org"
+    },
+    "permissions": {
+      "geolocation": {
+        "description": "Required to show user's location on map"
+      }
+    }
+  },
+  "lang": "en-US"
+}
