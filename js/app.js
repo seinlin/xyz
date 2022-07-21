@@ -7,7 +7,6 @@
 'use strict';
 
 var geo_running = false;
-var geo_good = false;
 
 function getLocation() {
   console.log(`XYZ get geolocation.`);
@@ -19,16 +18,12 @@ function getLocation() {
 
   var options = {
     enableHighAccuracy: true,
-    timeout: 60000,
+    timeout: 30000,
     maximumAge: 0
   };
 
   function success(pos) {
     var crd = pos.coords;
-
-    if (!geo_good) {
-      geo_good = true;
-    }
     geo_running = false;
 
     console.log('Your current position is:');
@@ -38,6 +33,8 @@ function getLocation() {
     document.getElementById("demo-x").innerHTML = crd.longitude;
     document.getElementById("demo-y").innerHTML = crd.latitude;
     document.getElementById("demo-a").innerHTML = crd.accuracy;
+
+    setTimeout(getLocation, 1000);
   }
 
   function error(err) {
@@ -55,7 +52,6 @@ function getLocation() {
         activity.start().then(rv => {
           // activity finised, do something
           console.log("Success: " + rv);
-          setTimeout(getLocation, 1000);
         },
         err => {
           // activity cancel do something
@@ -73,16 +69,15 @@ function getLocation() {
         activity.start().then(rv => {
           // activity finised, do something
           console.log("Success: " + rv);
-          setTimeout(getLocation, 1000);
         },
         err => {
           // activity cancel do something
           console.log('Error: ' + err);
         });
       }
-    } else {
-      navigator.geolocation.getCurrentPosition(success, error, options);
     }
+
+    setTimeout(getLocation, 1000);
   }
 
   navigator.geolocation.getCurrentPosition(success, error, options);
@@ -96,10 +91,10 @@ window.addEventListener('DOMContentLoaded', function() {
     console.log('on keyup: ' + e.key);
     switch(e.key) {
 	case "Backspace":
-	break;
+        break;
 	case "1":
-  	getLocation();
-	break;
+        getLocation();
+        break;
     }
   }
   document.body.addEventListener("keyup", handleKeyUpEvent);
@@ -111,10 +106,6 @@ window.addEventListener('DOMContentLoaded', function() {
 
 	console.log(' calculated_millis : ' + now +'  pressure : ' + atmpressure );
 	      document.getElementById("demo-z").innerHTML = atmpressure;
-
-    if (geo_good) {
-      getLocation();
-    }
   });
 
   getLocation();
