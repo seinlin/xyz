@@ -7,6 +7,8 @@
 'use strict';
 
 var geo_running = false;
+var first_get = false;
+var start_time = window.performance.now();
 
 function getLocation() {
   console.log(`XYZ get geolocation.`);
@@ -33,6 +35,14 @@ function getLocation() {
     document.getElementById("demo-x").innerHTML = crd.longitude;
     document.getElementById("demo-y").innerHTML = crd.latitude;
     document.getElementById("demo-a").innerHTML = crd.accuracy;
+
+    if (!first_get) {
+      first_get = true;
+      let logMsg = document.getElementById('log-div');
+      let markDiv = document.createElement('div');
+      logMsg.appendChild(markDiv);
+      markDiv.innerHTML = 'First Loc: ' + window.performance.now() + ' ms';
+    }
 
     setTimeout(getLocation, 1000);
   }
@@ -83,6 +93,24 @@ function getLocation() {
   navigator.geolocation.getCurrentPosition(success, error, options);
 }
 
+function timeElapsed() {
+  let logMsg = document.getElementById('log-time');
+  logMsg.innerHTML = 'Time elapsed: ' + parseInt((window.performance.now() - start_time) / 1000) + ' s';
+
+  setTimeout(timeElapsed, 999);
+}
+
+function listenAtmPressure() {
+  window.addEventListener('atmpressure', e => {
+    let atmpressure = e.value.toFixed(4);
+
+    var now = new Date().valueOf()
+
+	console.log(' calculated_millis : ' + now +'  pressure : ' + atmpressure );
+	      document.getElementById("demo-z").innerHTML = atmpressure;
+  });
+}
+
 window.addEventListener('DOMContentLoaded', function() {
 
   // We'll ask the browser to use strict code to help us catch errors earlier.
@@ -99,14 +127,13 @@ window.addEventListener('DOMContentLoaded', function() {
   }
   document.body.addEventListener("keyup", handleKeyUpEvent);
 
-  window.addEventListener('atmpressure', e => {
-    let atmpressure = e.value.toFixed(4);
+  listenAtmPressure();
 
-    var now = new Date().valueOf()
-
-	console.log(' calculated_millis : ' + now +'  pressure : ' + atmpressure );
-	      document.getElementById("demo-z").innerHTML = atmpressure;
-  });
+  let logMsg = document.getElementById('log-div');
+  let markDiv = document.createElement('div');
+  logMsg.appendChild(markDiv);
+  markDiv.id = 'log-time';
+  timeElapsed();
 
   getLocation();
 });
